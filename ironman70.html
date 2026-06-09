@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="70.3 Plan">
+<meta name="theme-color" content="#0a0a0a">
+<title>70.3 — 50 Days</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface2: #1e1e1e;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f0;
+    --muted: #666;
+    --accent: #e8ff47;
+    --accent-dim: rgba(232,255,71,0.12);
+    --done-line: rgba(255,255,255,0.18);
+    --radius: 14px;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    min-height: 100dvh;
+    overscroll-behavior: none;
+  }
+
+  /* HEADER */
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: calc(var(--safe-top) + 16px) 20px 14px;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--text);
+  }
+
+  .title span {
+    color: var(--accent);
+  }
+
+  .counter {
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    position: relative;
+    height: 6px;
+    background: var(--surface2);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 3px;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .progress-pct {
+    position: absolute;
+    right: 0;
+    top: -18px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* WEEK LABEL */
+  .week-header {
+    padding: 24px 20px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* DAY CARD */
+  .day-card {
+    margin: 0 12px 8px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: opacity 0.2s;
+  }
+
+  .day-card.done {
+    opacity: 0.55;
+  }
+
+  .day-card.done .day-content {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  /* special: D50 START */
+  .day-card.race {
+    border-color: rgba(232,255,71,0.3);
+    background: rgba(232,255,71,0.05);
+  }
+
+  .day-card.race .day-label {
+    color: var(--accent);
+  }
+
+  .day-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 14px 12px;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* CHECKBOX */
+  .checkbox {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: all 0.15s;
+    background: transparent;
+  }
+
+  .done .checkbox {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .checkbox svg {
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.15s;
+  }
+
+  .done .checkbox svg {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* DAY INFO */
+  .day-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .day-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .day-content {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  /* expand toggle */
+  .expand-btn {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: transform 0.2s;
+    margin-top: -2px;
+  }
+
+  .day-card.expanded .expand-btn {
+    transform: rotate(180deg);
+  }
+
+  /* DETAILS */
+  .day-details {
+    display: none;
+    padding: 0 14px 14px 48px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    border-top: 0.5px solid var(--border);
+    padding-top: 10px;
+  }
+
+  .day-card.expanded .day-details {
+    display: block;
+  }
+
+  .day-details ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .day-details ul li::before {
+    content: "·  ";
+    color: var(--accent);
+  }
+
+  .day-details .note {
+    margin-top: 6px;
+    color: rgba(232,255,71,0.7);
+    font-size: 12px;
+  }
+
+  .done .day-details {
+    text-decoration: line-through;
+  }
+
+  /* BOTTOM SPACER */
+  .bottom-spacer {
+    height: calc(var(--safe-bottom) + 24px);
+  }
+
+  /* Tap feedback */
+  .day-row:active { opacity: 0.7; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="title">70.3 <span>Plan</span></div>
+    <div class="counter" id="counter">0 / 50</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    <div class="progress-pct" id="progress-pct">0%</div>
+  </div>
+</div>
+
+<div id="plan"></div>
+<div class="bottom-spacer"></div>
+
+<script>
+const DAYS = [
+  { id:'D1',  week:1, title:'Bieg Z2 45–50 min', details:['bardzo spokojnie (nie 160+ bpm)', 'ma być „za łatwo"'] },
+  { id:'D2',  week:1, title:'Trenażer Z2 — DONE', details:['39:54 · 126 W / 132 NP · 30.3 km/h','zaliczony: Z2 + sweet spot low'], note:'✓ Zaliczony — odznacz i idź dalej' },
+  { id:'D3',  week:1, title:'Pływanie 45–60 min', details:['200 m rozgrzewka','8 × 100 m luźno (przerwa 15–20 s)','4 × 50 m technika'] },
+  { id:'D4',  week:1, title:'Rower Z2 60 min (trenażer)', details:['niższe tętno niż D2','równa jazda','zero ścigania prędkości'] },
+  { id:'D5',  week:1, title:'Bieg jakościowy (lekki)', details:['10 min rozgrzewki','5 × 3 min szybciej (kontrola)','2 min trucht','10 min schłodzenia'] },
+  { id:'D6',  week:1, title:'Rower długi Z2 — 2:00 h', details:['jedzenie na rowerze (test)','stała moc, bez skoków'], note:'Kluczowy trening tygodnia' },
+  { id:'D7',  week:1, title:'Bieg długi Z2 70–80 min', details:['spokojnie, równe tempo','jeśli tętno rośnie → zwalniasz'] },
+
+  { id:'D8',  week:2, title:'OFF / 30–40 min lekki rower', details:['aktywna regeneracja'] },
+  { id:'D9',  week:2, title:'Rower tempo 60–75 min', details:['3 × 10 min (komfortowo ciężko)'] },
+  { id:'D10', week:2, title:'Pływanie 45–60 min', details:['utrzymanie techniki'] },
+  { id:'D11', week:2, title:'Bieg Z2 45–50 min', details:['spokojnie'] },
+  { id:'D12', week:2, title:'Brick — rower + bieg', details:['60 min rower (tempo)','10–15 min bieg bardzo lekki'] },
+  { id:'D13', week:2, title:'OFF', details:['pełny odpoczynek'] },
+  { id:'D14', week:2, title:'Rower 2–2.5 h Z2', details:[], note:'Klucz tygodnia' },
+
+  { id:'D15', week:3, title:'Pływanie 45 min', details:[] },
+  { id:'D16', week:3, title:'Bieg: 4 × 6 min tempo', details:[] },
+  { id:'D17', week:3, title:'Rower 60 min Z2', details:[] },
+  { id:'D18', week:3, title:'Pływanie 60 min', details:[] },
+  { id:'D19', week:3, title:'Rower: 2 × 15–20 min tempo', details:[] },
+  { id:'D20', week:3, title:'Bieg 80–90 min Z2', details:[] },
+  { id:'D21', week:3, title:'Rower 2.5–3 h + 10 min trucht', details:[] },
+
+  { id:'D22', week:4, title:'OFF', details:[] },
+  { id:'D23', week:4, title:'VO2 rower: 5 × 4 min mocno', details:['3 min lekko między interwałami'] },
+  { id:'D24', week:4, title:'Pływanie 45–60 min', details:[] },
+  { id:'D25', week:4, title:'Bieg 50 min easy', details:[] },
+  { id:'D26', week:4, title:'Brick: 75 min rower + 20 min bieg', details:[] },
+  { id:'D27', week:4, title:'OFF', details:[] },
+  { id:'D28', week:4, title:'Rower 3 h Z2 (symulacja startu)', details:[], note:'Najmocniejszy blok — klucz tygodnia' },
+
+  { id:'D29', week:5, title:'Pływanie', details:[] },
+  { id:'D30', week:5, title:'Bieg tempo 5 × 5 min', details:[] },
+  { id:'D31', week:5, title:'Rower Z2 60 min', details:[] },
+  { id:'D32', week:5, title:'OFF', details:[] },
+  { id:'D33', week:5, title:'Rower 2 × 15 min tempo', details:[] },
+  { id:'D34', week:5, title:'Bieg 90 min Z2', details:[] },
+  { id:'D35', week:5, title:'Brick 2–3 h + 15 min bieg', details:[] },
+
+  { id:'D36', week:6, title:'OFF', details:[] },
+  { id:'D37', week:6, title:'Rower 4 × 5 min tempo', details:[] },
+  { id:'D38', week:6, title:'Pływanie', details:[] },
+  { id:'D39', week:6, title:'Bieg 45–60 min easy', details:[] },
+  { id:'D40', week:6, title:'Brick lekki', details:[] },
+  { id:'D41', week:6, title:'OFF', details:[] },
+  { id:'D42', week:6, title:'Rower 2 h Z2', details:[] },
+
+  { id:'D43', week:7, title:'Pływanie 30–40 min', details:[] },
+  { id:'D44', week:7, title:'Rower 3 × 6 min tempo', details:[] },
+  { id:'D45', week:7, title:'Bieg 40 min easy', details:[] },
+  { id:'D46', week:7, title:'OFF (reset)', details:[] },
+  { id:'D47', week:7, title:'Rower 60 min lekko', details:[] },
+  { id:'D48', week:7, title:'Bieg 25–30 min + 4 przebieżki', details:[] },
+  { id:'D49', week:7, title:'OFF — pełny reset', details:[] },
+  { id:'D50', week:7, title:'🏁 START 70.3', details:[], race: true },
+];
+
+const WEEK_LABELS = {
+  1: 'Tydzień 1 — Baza',
+  2: 'Tydzień 2',
+  3: 'Tydzień 3',
+  4: 'Tydzień 4 — Najmocniejszy blok',
+  5: 'Tydzień 5',
+  6: 'Tydzień 6 — Schodzenie objętości',
+  7: 'Tydzień 7 — Taper',
+};
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('im703_v1') || '{}'); } catch { return {}; }
+}
+
+function saveState(s) {
+  localStorage.setItem('im703_v1', JSON.stringify(s));
+}
+
+let state = loadState();
+
+function updateHeader() {
+  const done = DAYS.filter(d => state[d.id]).length;
+  const pct = Math.round((done / DAYS.length) * 100);
+  document.getElementById('counter').textContent = done + ' / ' + DAYS.length;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
+
+function toggle(id) {
+  state[id] = !state[id];
+  saveState(state);
+  const card = document.getElementById('card-' + id);
+  if (state[id]) card.classList.add('done'); else card.classList.remove('done');
+  updateHeader();
+}
+
+function toggleExpand(id, e) {
+  e.stopPropagation();
+  const card = document.getElementById('card-' + id);
+  card.classList.toggle('expanded');
+}
+
+function render() {
+  const container = document.getElementById('plan');
+  let html = '';
+  let lastWeek = 0;
+
+  DAYS.forEach(day => {
+    if (day.week !== lastWeek) {
+      lastWeek = day.week;
+      html += `<div class="week-header">${WEEK_LABELS[day.week]}</div>`;
+    }
+
+    const isDone = !!state[day.id];
+    const hasDetails = day.details.length > 0 || day.note;
+    const detailsHtml = hasDetails ? `
+      <div class="day-details">
+        ${day.details.length ? '<ul>' + day.details.map(d => `<li>${d}</li>`).join('') + '</ul>' : ''}
+        ${day.note ? `<div class="note">${day.note}</div>` : ''}
+      </div>` : '';
+
+    const expandBtn = hasDetails
+      ? `<div class="expand-btn" onclick="toggleExpand('${day.id}', event)">
+           <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+             <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           </svg>
+         </div>` : '';
+
+    html += `
+      <div class="day-card${isDone ? ' done' : ''}${day.race ? ' race' : ''}" id="card-${day.id}">
+        <div class="day-row" onclick="toggle('${day.id}')">
+          <div class="checkbox">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 6l3 3 5-5" stroke="#0a0a0a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="day-info">
+            <div class="day-label">${day.id}</div>
+            <div class="day-content">${day.title}</div>
+          </div>
+          ${expandBtn}
+        </div>
+        ${detailsHtml}
+      </div>`;
+  });
+
+  container.innerHTML = html;
+  updateHeader();
+}
+
+render();
+</script>
+</body>
+</html>
