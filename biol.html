@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Language" content="pl">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Powt&oacute;rki SRS &ndash; Biologia &amp; Chemia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap&subset=latin,latin-ext" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/tabler-icons.min.css">
+<style>
+:root {
+  --font-sans: "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-bg: #0a0a0b;
+  --color-bg-elevated: #141416;
+  --color-bg-card: #1a1a1e;
+  --color-bg-hover: #222228;
+  --color-border: #2a2a30;
+  --color-border-subtle: #1f1f24;
+  --color-text: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+  --color-text-tertiary: #71717a;
+  --color-accent: #22c55e;
+  --color-accent-dim: #16a34a;
+  --color-accent-glow: rgba(34, 197, 94, 0.15);
+  --color-bio-bg: rgba(34, 197, 94, 0.12);
+  --color-bio-text: #4ade80;
+  --color-chem-bg: rgba(139, 92, 246, 0.12);
+  --color-chem-text: #a78bfa;
+  --color-danger: #f87171;
+  --color-warn-bg: rgba(251, 146, 60, 0.12);
+  --color-warn-text: #fb923c;
+  --color-info-bg: rgba(59, 130, 246, 0.12);
+  --color-info-text: #60a5fa;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,.4), 0 0 0 1px var(--color-border-subtle);
+  --tab-h: 56px;
+  --header-h: 52px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior-y: contain;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding:
+    calc(var(--safe-top) + 12px)
+    calc(var(--safe-right) + 16px)
+    calc(var(--safe-bottom) + var(--tab-h) + 12px)
+    calc(var(--safe-left) + 16px);
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
+}
+
+.header h1 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header h1 .ti-brain {
+  font-size: 1.35rem;
+  color: var(--color-accent);
+}
+
+.hdr-date {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  text-align: right;
+  line-height: 1.3;
+}
+
+/* Content area */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.section { display: none; }
+.section.active { display: block; animation: fadeIn .2s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 1.25rem 0 0.625rem;
+}
+
+.section-label:first-child { margin-top: 0; }
+
+/* Bottom tab bar */
+.tabs {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 2px;
+  background: rgba(20, 20, 22, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--color-border-subtle);
+  padding: 6px calc(var(--safe-right) + 8px) calc(var(--safe-bottom) + 6px) calc(var(--safe-left) + 8px);
+  z-index: 50;
+}
+
+.tab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 44px;
+  padding: 6px 4px;
+  border: none;
+  background: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.625rem;
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+
+.tab .ti { font-size: 1.25rem; }
+
+.tab.active {
+  color: var(--color-accent);
+  background: var(--color-accent-glow);
+}
+
+.tab:active { opacity: 0.7; }
+
+@media (min-width: 520px) {
+  .tabs {
+    position: static;
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 4px;
+    margin-bottom: 1.25rem;
+    backdrop-filter: none;
+  }
+
+  .tab {
+    flex-direction: row;
+    gap: 6px;
+    font-size: 0.8125rem;
+    min-height: 40px;
+  }
+
+  .tab .ti { font-size: 1rem; }
+
+  .app {
+    padding-bottom: calc(var(--safe-bottom) + 24px);
+  }
+}
+
+/* Cards */
+.topic-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.625rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: opacity .2s, border-color .2s;
+  box-shadow: var(--shadow-card);
+}
+
+.topic-card.new-topic {
+  border-color: rgba(34, 197, 94, 0.4);
+  background: linear-gradient(135deg, var(--color-bg-card) 0%, rgba(34, 197, 94, 0.05) 100%);
+}
+
+.topic-card.done { opacity: 0.45; }
+
+.topic-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.125rem;
+}
+
+.icon-bio { background: var(--color-bio-bg); }
+.icon-chem { background: var(--color-chem-bg); }
+
+.topic-info { flex: 1; min-width: 0; }
+
+.topic-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topic-meta {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+/* Checkbox */
+.cb {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: transparent;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+
+.cb.checked {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.cb:active { transform: scale(0.92); }
+
+/* Badges */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.badge-rep {
+  background: var(--color-info-bg);
+  color: var(--color-info-text);
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+.badge-done {
+  background: var(--color-bg-hover);
+  color: var(--color-text-tertiary);
+  border-color: var(--color-border);
+}
+
+.badge-miss {
+  background: var(--color-warn-bg);
+  color: var(--color-warn-text);
+  border-color: rgba(251, 146, 60, 0.25);
+}
+
+/* Weekend block */
+.weekend-block {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-xl);
+  padding: 2rem 1.25rem;
+  text-align: center;
+  margin-bottom: 0.625rem;
+}
+
+.weekend-block .emoji { font-size: 2.5rem; margin-bottom: 0.75rem; }
+
+.weekend-block h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.weekend-block p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.weekend-block .hint {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9375rem;
+}
+
+.empty .ti {
+  font-size: 2.5rem;
+  color: var(--color-text-tertiary);
+  display: block;
+  margin: 0 auto 0.875rem;
+}
+
+/* Forms */
+.add-form {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.125rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-card);
+}
+
+.add-form h3 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.form-group { margin-bottom: 0.875rem; }
+
+.form-group label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  color: var(--color-text);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+.form-group input::placeholder { color: var(--color-text-tertiary); }
+
+.btn-primary {
+  width: 100%;
+  padding: 13px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--color-accent);
+  color: #052e16;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background .15s, transform .1s;
+}
+
+.btn-primary:active { transform: scale(0.98); background: var(--color-accent-dim); }
+
+@media (hover: hover) {
+  .btn-primary:hover { background: var(--color-accent-dim); }
+}
+
+/* List rows */
+.all-row {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: var(--shadow-card);
+}
+
+.all-row-emoji { font-size: 1.125rem; flex-shrink: 0; }
+
+.all-row-info { flex: 1; min-width: 0; }
+
+.all-row-name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.all-row-meta {
+  font-size: 0.6875rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.all-row-date {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+}
+
+.link-btn {
+  color: var(--color-text-tertiary);
+  font-size: 1.125rem;
+  text-decoration: none;
+  flex-shrink: 0;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color .15s;
+}
+
+.link-btn:active { color: var(--color-accent); }
+
+.del-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-tertiary);
+  font-size: 1.125rem;
+  padding: 8px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color .15s, background .15s;
+}
+
+.del-btn:active {
+  color: var(--color-danger);
+  background: rgba(248, 113, 113, 0.1);
+}
+
+/* Calendar nav */
+
+
+.today-badge {
+  font-size: 0.625rem;
+  font-weight: 600;
+  background: var(--color-accent-glow);
+  color: var(--color-accent);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Dots */
+.date-strip-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin: 0 -16px 1rem;
+  padding: 0 16px;
+}
+.date-strip-wrap::-webkit-scrollbar { display: none; }
+
+.date-strip {
+  display: flex;
+  gap: 6px;
+  padding: 4px 0 8px;
+  width: max-content;
+}
+
+.ds-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 48px;
+  padding: 6px 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-elevated);
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  flex-shrink: 0;
+}
+.ds-item:active { opacity: 0.7; }
+
+.ds-day {
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+.ds-num {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: 1;
+}
+.ds-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+.ds-item.has-tasks .ds-dot { background: var(--color-accent); }
+.ds-item.weekend { opacity: 0.45; }
+.ds-item.weekend .ds-day { color: rgba(251,191,36,0.8); }
+
+.ds-item.sel {
+  background: var(--color-accent-glow);
+  border-color: var(--color-accent);
+}
+.ds-item.sel .ds-day { color: var(--color-accent); }
+.ds-item.sel .ds-num { color: var(--color-accent); }
+
+.day-label-bar {
+  margin-bottom: 1rem;
+}
+.day-label-bar .dn {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.day-label-bar .dd {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 1px;
+  text-transform: capitalize;
+}
+
+
+/* Notification toast */
+.notif {
+  position: fixed;
+  top: calc(var(--safe-top) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-bg-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  z-index: 99;
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.notif.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 6px;
+  background: var(--color-bg-hover);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-accent-dim), var(--color-accent));
+  border-radius: 999px;
+  transition: width .4s ease;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Subject section headers */
+.subject-header {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  padding: 0.625rem 0 0.375rem;
+  margin-top: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: 0.375rem;
+  letter-spacing: 0.01em;
+}
+.subject-header:first-child { margin-top: 0.25rem; }
+.subject-bio { color: var(--color-bio-text); }
+.subject-chem { color: var(--color-chem-text); }
+</style>
+</head>
+<body>
+<h1 class="sr-only">Plan powt&oacute;rek SRS &ndash; biologia i chemia</h1>
+<div class="notif" id="notif" role="status" aria-live="polite"></div>
+<div class="app">
+  <header class="header">
+    <h1><i class="ti ti-brain" aria-hidden="true"></i>Powt&oacute;rki</h1>
+    <span class="hdr-date" id="hdr-date"></span>
+  </header>
+
+  <main class="content">
+    <div class="section active" id="tab-today"><div id="today-inner"></div></div>
+    <div class="section" id="tab-cal">
+      <div class="date-strip-wrap"><div class="date-strip" id="date-strip"></div></div>
+      <div class="day-label-bar"><div class="dn" id="cal-dn"></div><div class="dd" id="cal-dd"></div></div>
+      <div id="cal-inner"></div>
+    </div>
+    <div class="section" id="tab-add">
+      <div class="add-form">
+        <h3><i class="ti ti-plus" aria-hidden="true"></i> Nowy temat</h3>
+        <div class="form-group"><label for="f-name">Nazwa tematu</label><input type="text" id="f-name" placeholder="np. Genetyka" autocomplete="off" /></div>
+        <div class="form-group"><label for="f-subj">Przedmiot</label><select id="f-subj"><option value="bio">Biologia</option><option value="chem">Chemia</option></select></div>
+        <div class="form-group"><label for="f-link">Link do Notion (opcjonalnie)</label><input type="url" id="f-link" placeholder="https://notion.so/..." inputmode="url" /></div>
+        <button class="btn-primary" onclick="addTopic()"><i class="ti ti-check" aria-hidden="true"></i> Dodaj temat</button>
+      </div>
+      <div id="queue-preview"></div>
+    </div>
+    <div class="section" id="tab-all"><div id="all-inner"></div></div>
+  </main>
+
+  <nav class="tabs" role="tablist" aria-label="Nawigacja">
+    <button class="tab active" role="tab" aria-selected="true" onclick="goTab('today')"><i class="ti ti-calendar-event" aria-hidden="true"></i>Dzi&#347;</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="goTab('cal')"><i class="ti ti-calendar" aria-hidden="true"></i>Kalendarz</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="goTab('add')"><i class="ti ti-plus" aria-hidden="true"></i>Dodaj</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="goTab('all')"><i class="ti ti-list" aria-hidden="true"></i>Wszystkie</button>
+  </nav>
+</div>
+<script charset="UTF-8">
+const INTERVALS_PRESET=[1,3,6,10];
+const INTERVALS_NEW=[1,3,6,10];
+const PL={
+  today:'Dzi\u015b',tomorrow:'Jutro',yesterday:'Wczoraj',
+  todayBadge:'dzi\u015b',newTopic:'Nowy temat dzi\u015b',newTopicCal:'Nowy temat',
+  learnToday:'Ucz si\u0119 dzi\u015b \u00b7 powt\u00f3rki za 1,3,6,10 dni rob.',
+  learnTodayNew:'Nowy temat \u00b7 powt\u00f3rki za 1,3,6,10 dni',
+  rep1:'1. powt\u00f3rka',rep3:'2. powt\u00f3rka',rep5:'3. powt\u00f3rka',rep10:'4. powt\u00f3rka',
+  repDefault:'powt\u00f3rka',overdue:'zaleg\u0142y',new:'Nowy',
+  todo:'Do zrobienia',done:'Zrobione',reps:'Powt\u00f3rki',
+  noTasksToday:'Brak zada\u0144 na dzi\u015b',noTasksCal:'Brak zaplanowanych zada\u0144',
+  noTopics:'Brak temat\u00f3w',weekendFree:'Wolne!',weekendOff:' \u2013 brak powt\u00f3rek',
+  weekendHint:n=>'W poniedzia\u0142ek czeka '+n+' powt\u00f3rek',
+  sat:'Sobota',sun:'Niedziela',
+  daysAgo:n=>n+' dni temu',daysIn:n=>'Za '+n+' dni',
+  dayLabel:(i,t)=>i===0?'dzi\u015b':i>0?'za '+i+' dni':Math.abs(i)+' dni temu',
+  enterName:'Podaj nazw\u0119 tematu',added:(n,d)=>'"'+n+'" dodano \u00b7 nauka '+d,
+  queue:'Kolejka nauki',todayShort:'dzi\u015b',tomorrowShort:'jutro',inDays:n=>'za '+n+' dni',
+  status:{future:'w kolejce',today:'dzi\u015b',complete:'zako\u0144czony',active:'aktywny'},
+  metaLearn:(d,done,total)=>'nauka: '+d+' \u00b7 '+done+'/'+total+' powt\u00f3rek',
+  confirmDelete:'Usun\u0105\u0107?',undo:'Cofnij',markDone:'Zaznacz jako zrobione',
+  openNotion:'Otw\u00f3rz w Notion',dayNav:'Dzie\u0144'
+};
+const PRESET=[
+  {name:"Sk\u0142adniki nieorganiczne",subject:"bio",link:""},
+  {name:"W\u0119glowodany",subject:"bio",link:"https://www.notion.so/2-W-glowodany-34be4e14cb1e805b9c03f52bfaa68f54"},
+  {name:"Lipidy",subject:"bio",link:"https://www.notion.so/3-Lipidy-34be4e14cb1e80e1824bc0b8cf7b564e"},
+  {name:"Bia\u0142ka",subject:"bio",link:"https://www.notion.so/4-Bia-ka-34be4e14cb1e804686f0db6567639c33"},
+  {name:"Kwasy nukleinowe",subject:"bio",link:"https://www.notion.so/5-Kwasy-nukleinowe-34be4e14cb1e80aeb224f7114d7288de"},
+  {name:"Rodzaje kom\u00f3rek",subject:"bio",link:""},
+  {name:"Transport",subject:"bio",link:"https://www.notion.so/2-Transport-34be4e14cb1e80e083bfd6ae229bc9d4"},
+  {name:"Osmoza",subject:"bio",link:"https://www.notion.so/3-Osmoza-34be4e14cb1e800594f0fee33a8c8982"},
+  {name:"Organelle i struktury",subject:"bio",link:"https://www.notion.so/4-Organelle-i-struktury-34be4e14cb1e8061a8abcfe2aae77317"},
+  {name:"Podzia\u0142y kom\u00f3rkowe, mitoza",subject:"bio",link:"https://www.notion.so/5-Podzialy-komorkowe-mitoza-34be4e14cb1e80fdbccedd26321f0e45"},
+  {name:"Mejoza",subject:"bio",link:"https://www.notion.so/6-Mejoza-34be4e14cb1e8034ac23fa7ee056b3d3"},
+  {name:"Reakcje metaboliczne",subject:"bio",link:""},
+  {name:"Enzymy = Bia\u0142ka",subject:"bio",link:"https://www.notion.so/2-Enzymy-BIA-ka-34be4e14cb1e801e90ddf19c7066471a"},
+  {name:"Fotosynteza",subject:"bio",link:"https://www.notion.so/3-Fotosynteza-357e4e14cb1e80559808dafa56b1630a"},
+  {name:"Fotosynteza CAM, C4",subject:"bio",link:"https://www.notion.so/4-Fotosynteza-Cam-C4-35ee4e14cb1e807db85ad0ff7b593b33"},
+  {name:"Oddychanie kom\u00f3rkowe",subject:"bio",link:"https://www.notion.so/5-Oddychanie-kom-rkowe-14-05-360e4e14cb1e80aea741f869bf69ce16"},
+  {name:"Inne procesy",subject:"bio",link:"https://www.notion.so/6-Inne-procesy-19-05-365e4e14cb1e8091a4e1ee4947d8b682"},
+  {name:"Glukoza, tlen, kie\u0142kowanie",subject:"bio",link:"https://www.notion.so/7-Glukoza-tlen-kielkowanie-pewniak-21-06-367e4e14cb1e80d6b854c86097b94443"},
+  {name:"Klasyfikacja organizm\u00f3w",subject:"bio",link:""},
+  {name:"Wirusy",subject:"bio",link:"https://www.notion.so/Wirusy-36de4e14cb1e805c90cae06d3acc82f7"},
+  {name:"Bakterie",subject:"bio",link:"https://www.notion.so/Bakterie-37ae4e14cb1e806e9eccda297d086c33"},
+  // Chemia - Konfiguracja elektronowa
+  {name:"Konfiguracja elektronowa",subject:"chem",link:""},
+  {name:"Konfiguracja elektronowa - promocja",subject:"chem",link:"https://www.notion.so/2-Konfiguracja-elektronowa-promocja-34be4e14cb1e80b2886bddffcb9c0e3f"},
+  {name:"Liczby kwantowe",subject:"chem",link:"https://www.notion.so/3-Liczby-kwantowe-34be4e14cb1e801fbe3be4f649da5783"},
+  {name:"Konfiguracja jonów",subject:"chem",link:"https://www.notion.so/4-Konfiguracja-jon-w-34be4e14cb1e809684dee01de8d3c8e7"},
+  {name:"Konfiguracja powłokowa",subject:"chem",link:"https://www.notion.so/5-Konfiguracja-pow-okowa-34be4e14cb1e8083b470ef39a4f38428"},
+  {name:"Promień atomowy",subject:"chem",link:"https://www.notion.so/6-Promie-atomowy-p-34be4e14cb1e8077899bf1ec9ed16a00"},
+  {name:"Energia jonizacji",subject:"chem",link:"https://www.notion.so/Energia-jonizacji-p-34be4e14cb1e80c2af42eb48b31ab316"},
+  // Chemia - Wiązania
+  {name:"Wiązania jonowe",subject:"chem",link:""},
+  {name:"Wiązania kowalencyjne (atomowe)",subject:"chem",link:"https://www.notion.so/2-Wiazania-kowalencyjne-atomowe-19-05-365e4e14cb1e803a86f7e97253d973f3"},
+  {name:"Kowalencyjne czy jonowe? [matura]",subject:"chem",link:"https://www.notion.so/3-Kowalencyjne-czy-jonowe-matura-367e4e14cb1e802fa461f47e1a29b948"},
+  {name:"Wiązanie koordynacyjne (donorowo-akceptorowe)",subject:"chem",link:"https://www.notion.so/4-Wiazanie-koordynacyjne-donorowo-akceptorowe-37ae4e14cb1e80b197bff8a2e7fbe58e"},
+];
+
+function todayStr(){return new Date().toISOString().slice(0,10)}
+function addDays(d,n){const dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().slice(0,10)}
+function isWeekend(d){const dow=new Date(d).getDay();return dow===0||dow===6}
+function nextWorkday(d){let r=addDays(d,1);while(isWeekend(r))r=addDays(r,1);return r}
+function workdayOffset(base,n){let d=base;for(let i=0;i<n;i++)d=nextWorkday(d);return d}
+
+function initState(){
+  const t=todayStr();
+  // Split by subject and assign parallel learnDates
+  const bioTopics=PRESET.filter(p=>p.subject==='bio');
+  const chemTopics=PRESET.filter(p=>p.subject==='chem');
+  const topics=PRESET.map((p,i)=>{
+    const groupIdx=p.subject==='bio'
+      ?bioTopics.indexOf(p)
+      :chemTopics.indexOf(p);
+    const learnDate=workdayOffset(t,groupIdx);
+    return{
+      id:i+1,name:p.name,subject:p.subject,link:p.link,isPreset:true,
+      learnDate,
+      reviews:INTERVALS_PRESET.map(d=>({
+        interval:d,
+        due:workdayOffset(learnDate,d),
+        done:false,
+        missed:false
+      }))
+    };
+  });
+  return{topics,nextId:PRESET.length+1,streak:0,lastActive:null,totalDone:0,learnedToday:{}};
+}
+
+function loadST(){
+  try{
+    const s=localStorage.getItem('srs_v4');
+    if(s){
+      const st=JSON.parse(s);
+      st.topics.forEach(tp=>{
+        const preset=PRESET[tp.id-1];
+        if(preset) tp.name=preset.name;
+      });
+      return st;
+    }
+  }catch(e){}
+  return initState();
+}
+function save(){try{localStorage.setItem('srs_v4',JSON.stringify(ST));}catch(e){}}
+
+let ST=loadST();
+let calOffset=0;
+
+function notify(msg){
+  const el=document.getElementById('notif');
+  el.textContent=msg;el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2200);
+}
+
+function repLabel(interval){
+  return{1:PL.rep1,2:PL.rep2,3:PL.rep3,5:PL.rep5,6:PL.rep6,10:PL.rep10}[interval]||PL.repDefault;
+}
+
+function processMissed(){
+  const t=todayStr();
+  ST.topics.forEach(tp=>{
+    tp.reviews.forEach(r=>{
+      if(!r.done&&!r.missed&&r.due<t){
+        r.due=isWeekend(t)?nextWorkday(t):t;
+        r.missed=true;
+      }
+    });
+  });
+  save();
+}
+
+function getTasksForDate(dateStr){
+  const newTopics=ST.topics.filter(tp=>tp.learnDate===dateStr&&!tp.isPreset);
+  const presetToday=ST.topics.filter(tp=>tp.learnDate===dateStr&&tp.isPreset);
+  const reps=ST.topics.flatMap(tp=>
+    tp.reviews.filter(r=>r.due===dateStr).map(r=>({tp,r}))
+  );
+  // Preset topics on their learnDate show as first repetition (mark as rep card)
+  const presetReps=presetToday.map(tp=>({tp,r:tp.reviews[0],isFirst:true}));
+  return{newTopics,reps:[...presetReps,...reps.filter(({tp})=>tp.reviews[0]?.due!==dateStr||!tp.isPreset)],allReps:[...presetReps,...reps]};
+}
+
+function toggleDone(topicId,interval){
+  const tp=ST.topics.find(t=>t.id===topicId);if(!tp)return;
+  const r=tp.reviews.find(r=>r.interval===interval);if(!r)return;
+  r.done=!r.done;
+  if(r.done){
+    ST.totalDone=(ST.totalDone||0)+1;
+    const t=todayStr();
+    if(ST.lastActive!==t){
+      ST.streak=ST.lastActive===addDays(t,-1)?(ST.streak||0)+1:1;
+      ST.lastActive=t;
+    }
+  } else {
+    ST.totalDone=Math.max(0,(ST.totalDone||1)-1);
+  }
+  save();
+  renderToday();
+}
+
+
+function toggleLearnedToday(id){
+  if(!ST.learnedToday)ST.learnedToday={};
+  ST.learnedToday[id]=!ST.learnedToday[id];
+  save();renderToday();
+}
+function renderToday(){
+  processMissed();
+  const t=todayStr();
+  if(isWeekend(t)){
+    document.getElementById('today-inner').innerHTML=weekendBlock(t);
+    return;
+  }
+  const{newTopics,reps,allReps}=getTasksForDate(t);
+  const allDone=reps.filter(({r})=>r.done);
+  const total=reps.length;
+  const pct=total>0?Math.round(allDone.length/total*100):100;
+
+  let html=`<div class="progress-bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><div class="progress-fill" style="width:${pct}%"></div></div>`;
+
+  const subjects=[
+    {key:'bio',label:'\uD83E\uDDEC Biologia',cls:'bio'},
+    {key:'chem',label:'\u2697\uFE0F Chemia',cls:'chem'}
+  ];
+  let hasAny=false;
+  subjects.forEach(({key,label,cls})=>{
+    const sNew=newTopics.filter(tp=>tp.subject===key);
+    const sPending=reps.filter(({tp,r})=>tp.subject===key&&!r.done);
+    const sDone=reps.filter(({tp,r})=>tp.subject===key&&r.done);
+    if(sNew.length===0&&sPending.length===0&&sDone.length===0)return;
+    hasAny=true;
+    html+=`<div class="subject-header subject-${cls}">${label}</div>`;
+    if(sNew.length>0){
+      html+=`<div class="section-label">${PL.newTopic}</div>`;
+      sNew.forEach(tp=>{html+=newCard(tp);});
+    }
+    if(sPending.length>0){
+      html+=`<div class="section-label">${PL.todo} (${sPending.length})</div>`;
+      sPending.forEach(({tp,r})=>{html+=repCard(tp,r,false,true);});
+    }
+    if(sDone.length>0){
+      html+=`<div class="section-label">${PL.done}</div>`;
+      sDone.forEach(({tp,r})=>{html+=repCard(tp,r,true,true);});
+    }
+  });
+  if(!hasAny){
+    html+=`<div class="empty"><i class="ti ti-moon" aria-hidden="true"></i>${PL.noTasksToday}</div>`;
+  }
+  document.getElementById('today-inner').innerHTML=html;
+}
+
+function weekendBlock(dateStr){
+  const dow=new Date(dateStr).getDay();
+  const dayName=dow===6?PL.sat:PL.sun;
+  const nw=nextWorkday(dateStr);
+  const nwCount=getTasksForDate(nw).reps.length;
+  return`<div class="weekend-block">
+    <div class="emoji">🎉</div>
+    <h2>${PL.weekendFree}</h2>
+    <p>${dayName}${PL.weekendOff}</p>
+    <p class="hint">${PL.weekendHint(nwCount)}</p>
+  </div>`;
+}
+
+function newCard(tp){
+  const isDone=!!(ST.learnedToday&&ST.learnedToday[tp.id]);
+  return`<div class="topic-card new-topic${isDone?' done':''}">
+    <div class="topic-icon ${tp.subject==='bio'?'icon-bio':'icon-chem'}">${tp.subject==='bio'?'🧬':'⚗️'}</div>
+    <div class="topic-info">
+      <div class="topic-name" style="${isDone?'text-decoration:line-through;opacity:0.5':''}">${tp.name}</div>
+      <div class="topic-meta">${PL.learnTodayNew}</div>
+    </div>
+    ${tp.link?`<a href="${tp.link}" target="_blank" rel="noopener noreferrer" class="link-btn" aria-label="${PL.openNotion}"><i class="ti ti-external-link" aria-hidden="true"></i></a>`:''}
+    <button class="cb${isDone?' checked':''}" onclick="toggleLearnedToday(${tp.id})" aria-label="${isDone?PL.undo:PL.markDone}">${isDone?'<i class="ti ti-check" aria-hidden="true"></i>':''}</button>
+  </div>`;
+}
+
+function repCard(tp,r,isDone,interactive){
+  const cb=interactive
+    ?`<button class="cb${isDone?' checked':''}" onclick="toggleDone(${tp.id},${r.interval})" aria-label="${isDone?PL.undo:PL.markDone}">${isDone?'<i class="ti ti-check" aria-hidden="true"></i>':''}</button>`
+    :`<span class="badge${isDone?' badge-done':' badge-rep'}">${isDone?'✓':repLabel(r.interval)}</span>`;
+  return`<div class="topic-card${isDone?' done':''}">
+    <div class="topic-icon ${tp.subject==='bio'?'icon-bio':'icon-chem'}">${tp.subject==='bio'?'🧬':'⚗️'}</div>
+    <div class="topic-info"><div class="topic-name">${tp.name}</div><div class="topic-meta">${repLabel(r.interval)}${r.missed?' · '+PL.overdue:''}</div></div>
+    <div class="card-actions">
+      ${tp.link?`<a href="${tp.link}" target="_blank" rel="noopener noreferrer" class="link-btn" aria-label="${PL.openNotion}"><i class="ti ti-external-link" aria-hidden="true"></i></a>`:''}
+      ${cb}
+    </div>
+  </div>`;
+}
+
+function renderCalendar(){
+  const t=todayStr();
+  const viewDate=addDays(t,calOffset);
+
+  let label;
+  if(calOffset===0)label=PL.today;
+  else if(calOffset===1)label=PL.tomorrow;
+  else if(calOffset===-1)label=PL.yesterday;
+  else if(calOffset>0)label=PL.daysIn(calOffset);
+  else label=PL.daysAgo(Math.abs(calOffset));
+
+  document.getElementById('cal-dn').innerHTML=label+(calOffset===0?'<span class="today-badge">'+PL.todayBadge+'</span>':'');
+  document.getElementById('cal-dd').textContent=new Date(viewDate).toLocaleDateString('pl-PL',{weekday:'long',day:'numeric',month:'long'});
+
+  const DAY_SHORT=['Nd','Pn','Wt','Śr','Cz','Pt','Sb'];
+  let strip='';
+  for(let i=-3;i<=30;i++){
+    const d=addDays(t,i);
+    const we=isWeekend(d);
+    const{newTopics,reps}=getTasksForDate(d);
+    const hasTasks=!we&&(newTopics.length>0||reps.length>0);
+    const dow=new Date(d).getDay();
+    const dayNum=new Date(d).getDate();
+    strip+=`<div class="ds-item${we?' weekend':''}${hasTasks?' has-tasks':''}${i===calOffset?' sel':''}" onclick="setCalDay(${i})" role="button" tabindex="0" aria-label="${PL.dayNav} ${PL.dayLabel(i)}">
+      <span class="ds-day">${DAY_SHORT[dow]}</span>
+      <span class="ds-num">${dayNum}</span>
+      <span class="ds-dot"></span>
+    </div>`;
+  }
+  const stripEl=document.getElementById('date-strip');
+  stripEl.innerHTML=strip;
+  // Scroll selected item into view
+  setTimeout(()=>{
+    const sel=stripEl.querySelector('.sel');
+    if(sel)sel.scrollIntoView({inline:'center',behavior:'smooth',block:'nearest'});
+  },50);
+
+  let html='';
+  if(isWeekend(viewDate)){
+    html=weekendBlock(viewDate);
+  } else {
+    const{newTopics,reps}=getTasksForDate(viewDate);
+    if(newTopics.length>0){
+      html+=`<div class="section-label">${PL.newTopicCal}</div>`;
+      newTopics.forEach(tp=>{html+=newCard(tp);});
+    }
+    if(reps.length>0){
+      html+=`<div class="section-label">${PL.reps} (${reps.length})</div>`;
+      reps.forEach(({tp,r})=>{html+=repCard(tp,r,r.done,calOffset===0);});
+    }
+    if(!newTopics.length&&!reps.length){
+      html=`<div class="empty"><i class="ti ti-calendar-off" aria-hidden="true"></i>${PL.noTasksCal}</div>`;
+    }
+  }
+  document.getElementById('cal-inner').innerHTML=html;
+
+}
+
+function shiftDay(d){calOffset+=d;renderCalendar();}
+function setCalDay(i){calOffset=i;renderCalendar();}
+
+function addTopic(){
+  const name=document.getElementById('f-name').value.trim();
+  const subj=document.getElementById('f-subj').value;
+  const link=document.getElementById('f-link').value.trim();
+  if(!name){notify(PL.enterName);return;}
+  const t=todayStr();
+  const learnDate=t;
+  const tp={
+    id:ST.nextId++,name,subject:subj,link,learnDate,
+    reviews:INTERVALS_NEW.map(d=>({interval:d,due:workdayOffset(learnDate,d),done:false,missed:false}))
+  };
+  ST.topics.push(tp);save();
+  document.getElementById('f-name').value='';
+  document.getElementById('f-link').value='';
+  notify(PL.added(name,learnDate));
+  renderQueuePreview();renderToday();
+}
+
+function renderQueuePreview(){
+  const t=todayStr();
+  const upcoming=ST.topics.filter(tp=>tp.learnDate>=t).slice(0,6);
+  if(!upcoming.length){document.getElementById('queue-preview').innerHTML='';return;}
+  let html=`<div class="section-label">${PL.queue}</div>`;
+  upcoming.forEach(tp=>{
+    const diff=Math.round((new Date(tp.learnDate)-new Date(t))/864e5);
+    const lbl=diff===0?PL.todayShort:diff===1?PL.tomorrowShort:PL.inDays(diff);
+    html+=`<div class="all-row">
+      <span class="all-row-emoji">${tp.subject==='bio'?'🧬':'⚗️'}</span>
+      <div class="all-row-info"><div class="all-row-name">${tp.name}</div></div>
+      <span class="all-row-date">${lbl}</span>
+    </div>`;
+  });
+  document.getElementById('queue-preview').innerHTML=html;
+}
+
+function renderAll(){
+  const t=todayStr();
+  let html='';
+  ST.topics.forEach(tp=>{
+    const doneR=tp.reviews.filter(r=>r.done).length;
+    const status=tp.learnDate>t?'future':tp.learnDate===t?'today':doneR===tp.reviews.length?'complete':'active';
+    const sLabel=PL.status[status];
+    const sColor={future:'badge-done',today:'badge-rep',complete:'badge-rep',active:'badge-rep'}[status];
+    html+=`<div class="all-row">
+      <span class="all-row-emoji">${tp.subject==='bio'?'🧬':'⚗️'}</span>
+      <div class="all-row-info">
+        <div class="all-row-name">${tp.name}</div>
+        <div class="all-row-meta">${PL.metaLearn(tp.learnDate,doneR,tp.reviews.length)}</div>
+      </div>
+      ${tp.link?`<a href="${tp.link}" target="_blank" rel="noopener noreferrer" class="link-btn" aria-label="${PL.openNotion}"><i class="ti ti-external-link" aria-hidden="true"></i></a>`:''}
+      <span class="badge ${sColor}">${sLabel}</span>
+      <button class="del-btn" onclick="if(confirm('${PL.confirmDelete}'))delTopic(${tp.id})" aria-label="Usu\u0144"><i class="ti ti-trash" aria-hidden="true"></i></button>
+    </div>`;
+  });
+  document.getElementById('all-inner').innerHTML=html||`<div class="empty">${PL.noTopics}</div>`;
+}
+
+function delTopic(id){ST.topics=ST.topics.filter(t=>t.id!==id);save();renderAll();renderToday();}
+
+function goTab(tab){
+  const tabs=['today','cal','add','all'];
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    const active=tabs[i]===tab;
+    el.classList.toggle('active',active);
+    el.setAttribute('aria-selected',active);
+  });
+  document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if(tab==='cal')renderCalendar();
+  if(tab==='all')renderAll();
+  if(tab==='add')renderQueuePreview();
+}
+
+document.getElementById('hdr-date').textContent=new Date().toLocaleDateString('pl-PL',{weekday:'short',day:'numeric',month:'short'});
+renderToday();
+</script>
+</body>
+</html>
